@@ -31,11 +31,7 @@ strings P and Q contain a total of at most 20 distinct letters.
  */
 package CodilityTestSets;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 public class minDistinct {
@@ -55,7 +51,7 @@ public class minDistinct {
 
         // 2️⃣ Check if answer = 2
         for (char c1 = 'a'; c1 <= 'z'; c1++) {
-            for (char c2 = (char)(c1 + 1); c2 <= 'z'; c2++) {
+            for (char c2 = (char) (c1 + 1); c2 <= 'z'; c2++) {
                 boolean possible = true;
                 for (int i = 0; i < n; i++) {
                     char p = P.charAt(i), q = Q.charAt(i);
