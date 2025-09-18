@@ -17,18 +17,20 @@ each element of array A is an integer within the range [−1,000,000..1,000,000]
  */
 
 package CodilityTestSets;
-import java.util.Scanner;
+
+// import java.util.Scanner;
+import java.util.*;
+
 public class Distinct {
-    public static int solution (int[] A) {
+    public static int solution(int[] A) {
         java.util.HashMap<Integer, Boolean> map = new java.util.HashMap<>();
-        for (int num :A) {
+        for (int num : A) {
             map.put(num, true);
         }
         return map.size();
     }
 
-    public static void main (String [] Args) {
-        Distinct distinct = new Distinct();
+    public static void main(String[] Args) {
         Scanner sc = new Scanner(System.in);
         System.out.print("Enter the number of elements in the array: ");
         int n = sc.nextInt();
@@ -45,10 +47,10 @@ public class Distinct {
 }
 
 /*
-Enter the number of elements in the array: 6
-Enter the elements of the array:
-2 1 1 2 3 1
-
-The number of distinct values in the array is: 3
-
+ * Enter the number of elements in the array: 6
+ * Enter the elements of the array:
+ * 2 1 1 2 3 1
+ * 
+ * The number of distinct values in the array is: 3
+ * 
  */
