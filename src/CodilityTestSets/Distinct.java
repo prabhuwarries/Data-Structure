@@ -17,7 +17,10 @@ each element of array A is an integer within the range [−1,000,000..1,000,000]
  */
 
 package CodilityTestSets;
-import java.util.Scanner;
+
+// import java.util.Scanner;
+import java.util.*;
+
 public class Distinct {
     public static int solution (int[] A) {
         java.util.HashMap<Integer, Boolean> map = new java.util.HashMap<>();
