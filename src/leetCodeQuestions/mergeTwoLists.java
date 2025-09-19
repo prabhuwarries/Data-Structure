@@ -1,7 +1,7 @@
 package leetCodeQuestions;
 
 public class mergeTwoLists {
-    public class ListNode {
+    public static class ListNode {
         int val;
         ListNode next;
 
@@ -20,21 +20,20 @@ public class mergeTwoLists {
 
     public ListNode mergeListNodes(ListNode list1, ListNode list2) {
         ListNode dummy = new ListNode(-1);
-        ListNode current = dummy;
         while (list1 != null && list2 != null) {
             if (list1.val < list2.val) {
-                current.next = list1;
+                dummy.next = list1;
                 list1 = list1.next;
             } else {
-                current.next = list2;
+                dummy.next = list2;
                 list2 = list2.next;
             }
-            return current.next;
+            return dummy.next;
         }
         if (list1 != null)
-            current.next = list1;
+            dummy.next = list1;
         if (list2 != null)
-            current.next = list2;
+            dummy.next = list2;
         return dummy.next;
 
     }
@@ -50,13 +49,13 @@ public class mergeTwoLists {
 
     public static void main(String[] args) {
         mergeTwoLists mtl = new mergeTwoLists();
-        ListNode list1 = mtl.new ListNode(1);
-        list1.next = mtl.new ListNode(2);
-        list1.next.next = mtl.new ListNode(4);
+        ListNode list1 = new ListNode(1);
+        list1.next = new ListNode(2);
+        list1.next.next = new ListNode(4);
 
-        ListNode list2 = mtl.new ListNode(1);
-        list2.next = mtl.new ListNode(3);
-        list2.next.next = mtl.new ListNode(4);
+        ListNode list2 = new ListNode(1);
+        list2.next = new ListNode(3);
+        list2.next.next = new ListNode(4);
 
         System.out.println("List 1:");
         printList(list1);

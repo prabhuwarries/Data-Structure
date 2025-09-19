@@ -20,7 +20,7 @@ class Opinion {
 }
 
 public class MaxLiability {
-    private static List<Opinion> opinions = new ArrayList<>();
+    private static final List<Opinion> opinions = new ArrayList<>();
     private static List<Map<String, Object>> lastTable = null;
     private static double lastMaxLiability = 0;
     private static double cashOut = 0;
