@@ -1,7 +1,7 @@
 package QAInterviewQuestions;
 
 public class ReverseInteger {
-    public int Solution( int x) {
+    public int Solution(int x) {
         int reversed = 0;
         while (x != 0) {
             int digit = x % 10;
@@ -39,4 +39,3 @@ public class ReverseInteger {
         System.out.println("Reversed of " + input5 + " is: " + obj.Solution(input5)); // Output: 0
     }
 }
-
