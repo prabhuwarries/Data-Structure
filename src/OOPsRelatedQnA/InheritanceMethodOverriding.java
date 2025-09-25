@@ -96,3 +96,22 @@ class TestInheritanceMethodOverriding {
         obj4.move(); // Output: Truck is moving
     }
 }
+
+/*
+public class Vehicle {
+    protected int speed;
+
+    public void move() {
+        System.out.println("Vehicle is moving at " + speed + " km/h");
+    }
+}
+
+public class Car extends Vehicle {
+    private int numberOfDoors;
+
+    public Car(int speed, int doors) {
+        this.speed = speed;
+        this.numberOfDoors = doors;
+    }
+}
+ */

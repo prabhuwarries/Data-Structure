@@ -31,6 +31,7 @@ public class twoSum {
         }
         return new int[]{-1, -1}; // Return -1, -1 if no solution is found
     }
+
     public static void main(String[] args) {
         twoSum ts = new twoSum();
         int[] numbs = {2, 7, 11, 15};
