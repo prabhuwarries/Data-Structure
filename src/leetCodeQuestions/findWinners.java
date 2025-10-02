@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public class findWinners {
-    public List<List<Integer>> findWinners(int[][] matches) {
+    public List<List<Integer>> Solution(int[][] matches) {
         Map<Integer, Integer> lossCount = new HashMap<>();
 
         for (int[] match : matches) {
@@ -40,7 +40,7 @@ public class findWinners {
         findWinners solution = new findWinners();
         int[][] matches = { { 1, 3 }, { 2, 3 }, { 3, 6 }, { 5, 6 }, { 5, 7 }, { 4, 5 }, { 4, 8 }, { 4, 9 }, { 10, 4 },
                 { 10, 9 } };
-        List<List<Integer>> result = solution.findWinners(matches);
+        List<List<Integer>> result = solution.Solution(matches);
         System.out.println("Players with no losses: " + result.get(0)); // Output: [1, 2, 10]
         System.out.println("Players with one loss: " + result.get(1)); // Output: [4, 5, 7, 8]
     }
