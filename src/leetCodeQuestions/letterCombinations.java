@@ -5,30 +5,33 @@ A mapping of digits to letters (just like on the telephone buttons) is given bel
 Note that 1 does not map to any letters.
  */
 package leetCodeQuestions;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class letterCombinations {
-    private static final String [] KEYPAD = {
-            "",     // 0
-            "",     // 1
-            "abc",  // 2
-            "def",  // 3
-            "ghi",  // 4
-            "jkl",  // 5
-            "mno",  // 6
+    private static final String[] KEYPAD = {
+            "", // 0
+            "", // 1
+            "abc", // 2
+            "def", // 3
+            "ghi", // 4
+            "jkl", // 5
+            "mno", // 6
             "pqrs", // 7
-            "tuv",  // 8
-            "wxyz"  // 9
+            "tuv", // 8
+            "wxyz" // 9
     };
-    public List<String> letterCombinations(String digits) {
+
+    public List<String> Solution(String digits) {
         List<String> result = new ArrayList<>();
         if (digits == null || digits.isEmpty()) {
             return result;
-    }
+        }
         backtrack(result, new StringBuilder(), digits, 0);
         return result;
     }
+
     private void backtrack(List<String> result, StringBuilder current, String digits, int index) {
         if (index == digits.length()) {
             result.add(current.toString());
@@ -45,13 +48,13 @@ public class letterCombinations {
     public static void main(String[] args) {
         letterCombinations solution = new letterCombinations();
         String digits = "23";
-        List<String> combinations = solution.letterCombinations(digits);
+        List<String> combinations = solution.Solution(digits);
         System.out.println("Letter combinations for digits " + digits + ": " + combinations);
         String digits2 = "";
-        List<String> combinations2 = solution.letterCombinations(digits2);
+        List<String> combinations2 = solution.Solution(digits2);
         System.out.println("Letter combinations for digits " + digits2 + ": " + combinations2);
         String digits3 = "2";
-        List<String> combinations3 = solution.letterCombinations(digits3);
+        List<String> combinations3 = solution.Solution(digits3);
         System.out.println("Letter combinations for digits " + digits3 + ": " + combinations3);
     }
 }

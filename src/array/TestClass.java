@@ -1,7 +1,6 @@
 package array;
 
 import java.io.*;
-import java.util.*;
 
 public class TestClass {
     public static void main(String[] args) throws IOException {
@@ -12,7 +11,8 @@ public class TestClass {
             int T = Integer.parseInt(br.readLine().trim());
             for (int t_i = 0; t_i < T; t_i++) {
                 String[] parts = br.readLine().trim().split(" ");
-                if (parts.length != 2) throw new IOException("Invalid input format");
+                if (parts.length != 2)
+                    throw new IOException("Invalid input format");
                 long n = Long.parseLong(parts[0]);
                 int k = Integer.parseInt(parts[1]);
 
@@ -36,7 +36,8 @@ public class TestClass {
 
         while (start <= n) {
             long end = Math.min(n, safePow(k, digits) - 1);
-            if (end < start) break;
+            if (end < start)
+                break;
 
             long count = end - start + 1;
             result += count * digits;

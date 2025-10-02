@@ -1,7 +1,7 @@
 package leetCodeQuestions;
 
 public class addBinary {
-    public String addBinary(String a, String b) {
+    public String Solution(String a, String b) {
         StringBuilder result = new StringBuilder();
         int i = a.length() - 1;
         int j = b.length() - 1;
@@ -28,7 +28,7 @@ public class addBinary {
         addBinary obj = new addBinary();
         String a = "1010";
         String b = "1011";
-        String result = obj.addBinary(a, b);
+        String result = obj.Solution(a, b);
         System.out.println(result);
     }
 }

@@ -1,7 +1,7 @@
 package leetCodeQuestions;
 
 public class convertTime {
-    public int convertTime(String current, String correct) {
+    public int Solution(String current, String correct) {
         var currentMinutes = Integer.parseInt(current.substring(0, 2)) * 60 + Integer.parseInt(current.substring(3));
         var correctMinutes = Integer.parseInt(correct.substring(0, 2)) * 60 + Integer.parseInt(correct.substring(3));
 
@@ -21,12 +21,12 @@ public class convertTime {
         convertTime solution = new convertTime();
         String current = "02:30";
         String correct = "04:35";
-        int result = solution.convertTime(current, correct);
+        int result = solution.Solution(current, correct);
         System.out.println("Minimum operations: " + result); // Output: 3
 
         String current2 = "11:00";
         String correct2 = "11:01";
-        int result2 = solution.convertTime(current2, correct2);
+        int result2 = solution.Solution(current2, correct2);
         System.out.println("Minimum operations: " + result2); // Output: 1
     }
 
