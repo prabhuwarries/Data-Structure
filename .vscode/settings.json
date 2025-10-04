@@ -1,4 +1,4 @@
 {
-    "github.copilot.nextEditSuggestions.enabled": false,
+    "github.copilot.nextEditSuggestions.enabled": true,
     "files.autoSave": "onWindowChange"
 }
