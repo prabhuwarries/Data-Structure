@@ -1,5 +1,7 @@
 /*
-A non-empty array A consisting of N numbers is given. The array is sorted in non-decreasing order. The absolute distinct count of this array is the number of distinct absolute values among the elements of the array.
+A non-empty array A consisting of N numbers is given.
+The array is sorted in non-decreasing order.
+The absolute distinct count of this array is the number of distinct absolute values among the elements of the array.
 
 For example, consider array A such that:
 
