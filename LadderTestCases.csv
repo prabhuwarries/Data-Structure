@@ -1,0 +1,52 @@
+Test Case ID,Description,Preconditions,Steps,Expected Outcome
+MKT-001,Positive: Fetch active markets when cached in Redis.,Redis has cached active markets; user authenticated.,1. Send GET request with auth token.,Returns array of active markets with user-specific order books; status 200.
+MKT-002,Positive: Fetch from DynamoDB if not in Redis.,No cache in Redis; active markets exist in sb_ladder_market.,1. Send GET request.,Queries DynamoDB, computes order books, caches in Redis, returns array; status 200.
+MKT-003,Negative: No active markets available.,No active markets in DB/Redis.,1. Send GET request.,Returns empty array; status 200 (no error).
+MKT-004,Negative: Unauthorized access.,No auth token.,1. Send GET without token.,Returns 401 Unauthorized.
+MKT-005,Edge: Maximum number of active markets (e.g., 100).,100 active markets in DB.,1. Send GET request.,Returns full array without truncation; performance within limits.
+MKT-006,Edge: Empty Redis but DB has one market with no user participation.,User has no bids; one active market.,1. Send GET.,Returns market details with empty user order book.
+PLB-001,Positive: Place bid with available liability, immediate match.,User has wallet balance; opposing bid available in avail_above/below; liability < max.,1. POST with valid payload (optionId, value, qty, marketId). 2. Liability check passes.,Bid persisted; sent to SQS; returns confirmation + updated ladder table (with matched qty); wallet debited if needed.
+PLB-002,Positive: Place bid with lower matching (split across better levels).,No direct match; better levels available (e.g., Above 60 splits to 58/59).,1. POST bid. 2. Matching engine triggers lower matching.,Bid split (e.g., ₹50 at 58 matched, ₹20 at 59 matched, ₹30 pending); updates DynamoDB/MySQL/Redis; returns updated table.
+PLB-003,Negative: Insufficient liability (maxLiability exceeded).,User's current liability + new bid > max (from buildLiabilityTable).,1. POST bid.,Returns error (e.g., "Liability exceeded"); no persistence; status 400.
+PLB-004,Negative: Invalid input (e.g., negative qty).,Joi validation fails.,1. POST with invalid payload.,Returns validation error; status 400.
+PLB-005,Edge: Zero qty bid.,Valid other params.,1. POST with qty=0.,Returns error or ignores; no DB update.
+PLB-006,Edge: Bid on closed market.,Market status inactive in sb_ladder_market.,1. POST bid.,Returns "Market closed" error; status 403.
+PLB-007,Positive: No wallet debit (using existing liability).,maxLiability - maxInvestment <=0.,1. POST bid.,Uses existing; persists bid; no debit.
+JPR-001,Positive: Preview for new user on active market.,Market active; user has no bids.,1. GET with marketId, optionId.,Returns preview (e.g., simulated position, leverage); status 200.
+JPR-002,Positive: Preview with existing user bids.,User has bids; order book in Redis.,1. GET request.,Computes preview including current bids; returns details.
+JPR-003,Negative: Invalid optionId (not 1 or 2).,Joi fails.,1. GET with optionId=3.,Returns validation error; status 400.
+JPR-004,Negative: Market not found.,Invalid marketId.,1. GET request.,Returns "Market not found"; status 404.
+JPR-005,Edge: Preview on market with max breakpoints.,Many bids creating multiple segments.,1. GET request.,Returns full preview without overflow.
+CHK-001,Positive: Compute table with matched and pending bids.,User has bids (mq>0, pq>0); usePendingOptionId1/2=true.,1. GET with userId, marketId.,Returns LadderTableResult: breakpoints, rows with winnings/netProfit/liability per segment, maxLiability, totalInvested.
+CHK-002,Positive: Exclude pending bids for option 1.,usePendingOptionId1=false.,1. GET request.,Table computed without pq for optionId=1; accurate sums.
+CHK-003,Negative: No bids for user/market.,Empty sb_ladder_bids.,1. GET request.,Returns empty result: [] breakpoints, [] rows, 0 maxLiability/totalInvested.
+CHK-004,Negative: Invalid marketId.,Market not exist.,1. GET request.,Returns 404 or empty.
+CHK-005,Edge: Single bid (one breakpoint).,One bid, optionId=1, value=100, mq=10.,1. GET.,Segments: "100 & Below", "100 & Above"; computes winnings = (sum1 + sum2)*2 * pricePerQty, liability if netProfit<0.
+CHK-006,Edge: Max liability in worst segment.,Bids causing high liability in one segment.,1. GET.,maxLiability reflects largest -netProfit.
+MDT-001,Positive: Fetch details for active market.,Market in Redis/DynamoDB.,1. GET via active markets or specific endpoint.,Returns market definition, status, user order book.
+MDT-002,Positive: Update LMV via cron.,Cron runs; LMV changes.,1. Fetch details post-cron.,Reflects updated LMV in bb_market.
+MDT-003,Negative: Inactive market.,Market closed.,1. Fetch.,Returns status "inactive" or excludes from list.
+MDT-004,Edge: Market with no order book.,New market.,1. Fetch.,Returns empty order book.
+MYE-001,Positive: User with multiple events.,User participated in markets; entries in participation table.,1. POST with userId.,Returns list of invested markets.
+MYE-002,Positive: Include settled events.,Settled markets with distribution done.,1. POST.,Returns events with win/loss details.
+MYE-003,Negative: No participation.,Empty table for user.,1. POST.,Returns empty list.
+MYE-004,Edge: User with max events (e.g., 50).,50 entries.,1. POST.,Returns full list without truncation.
+MAT-001,Positive: Direct match with available opposing bid.,Bid in SQS; avail_above has match.,1. Poller triggers engine.,Match; update DBs/Redis; notify users; mq increases, pq=0.
+MAT-002,Positive: Lower matching split.,No direct; better levels available.,1. Process bid.,Split bid; create new entries in sb_ladder_bids; update parent; partial match.
+MAT-003,Negative: No match available.,No opposing bids.,1. Process.,Add to avail_above/below; pq full, mq=0.
+MAT-004,Edge: Full match across multiple levels.,Bid ₹100; matches ₹100 split over 3 levels.,1. Process.,All matched; no pending; updates all DBs.
+MAT-005,Edge: Cashout on matched bid.,Matched bid; cashout request.,1. Trigger cashout.,Calculate wager; update wallet; remove from matched_bids.
+DIS-001,Positive: Win distribution with rake.,Market settled (score available); user wins.,1. Fetch bids by user. 2. Calculate outcome.,Deduct rake (e.g., 5%); credit net winnings to wallet; log to ledger.
+DIS-002,Positive: Loss (no winnings).,User loses based on direction/score.,1. Process.,No credit; update participation table.
+DIS-003,Negative: No bids for market.,Empty bids.,1. Trigger distribution.,No action; log "No participants".
+DIS-004,Edge: Multiple users, mixed win/loss.,10 users; varied bids.,1. Group by userId. 2. Process each.,Correct credits; rake applied per user.
+DIS-005,Edge: Zero rake config.,Rake=0%.,1. Distribute.,Full winnings credited.
+HLH-001,Positive: Health check success.,API running.,1. Send GET /health.,Returns { status: "ok", timestamp }; status 200.
+LAD-001,Positive: Compute ladder table with bids.,User has bids in sb_ladder_bids.,1. GET /ladder with userId, marketId.,Fetches bids, computes liability tables, returns ladder tables; status 200.
+LAD-002,Negative: No bids for user.,Empty sb_ladder_bids.,1. GET /ladder.,Returns empty result; status 200.
+SIM-001,Positive: Simulate place bid.,User has existing bids.,1. GET /ladder/place-bid/simulate with payload.,Fetches current bids, simulates new bid, returns simulated ladder table, leverage, wallet impact; status 200.
+SIM-002,Negative: Invalid simulation input.,Joi validation fails.,1. GET /ladder/place-bid/simulate with invalid payload.,Returns validation error; status 400.
+PCB-001,Positive: Place bid successfully.,Valid input; sufficient liability.,1. POST /ladder/place-bid with payload.,Validates input, persists bid, sends to SQS, returns confirmation and updated ladder table; status 200.
+PCB-002,Negative: Place bid with invalid input.,Joi fails.,1. POST /ladder/place-bid with invalid payload.,Returns validation error; status 400.
+CNB-001,Positive: Cancel specific bid.,Valid bidId exists.,1. POST /ladder/cancel-bid with bidId.,Cancels bid, sends to Cancel Engine SQS, returns cancellation in progress; status 200.
+CNB-002,Negative: Cancel non-existent bid.,Invalid bidId.,1. POST /ladder/cancel-bid with invalid bidId.,Returns error; status 404.

@@ -1,0 +1,12 @@
+Cell,Header,Formula (or Manual Input),Notes
+A1,Condition,"(Manual: Enter ""Above"" or ""Below"" starting A2)","e.g., A2: ""Above"", A3: ""Below"""
+B1,Value,(Manual: Enter numeric threshold starting B2),"e.g., B2: 100, B3: 150"
+C1,Amount,(Manual: Enter numeric amount starting C2),"e.g., C2: 400, C3: 300"
+D1,Total Invested,=SUM(C2:C100),Sum of all bid amounts; adjust range if needed
+E1,Breakpoints,"=SORT(UNIQUE(FILTER(B2:B100, B2:B100<>"""")))","Spills unique sorted bid values (e.g., 100, 150)"
+F1,Windows,"=LET(bp, E2#, num, ROWS(bp), seq, SEQUENCE(num+1), IF(seq=1, ""Below ""&INDEX(bp,1), IF(seq=num+1, INDEX(bp,num)&"" and above"", INDEX(bp,seq-1)&"" - <""&INDEX(bp,seq))))","Spills segments (e.g., ""Below 100"", ""100 - <150"", ""150 and above"")"
+G1,Test Price,"=LET(bp, E2#, num, ROWS(bp), seq, SEQUENCE(num+1), IF(seq=1, INDEX(bp,1)-1, IF(seq=num+1, INDEX(bp,num)+1, INDEX(bp,seq-1)+0.1)))","Spills test prices (e.g., 99, 100.1, 151)"
+H1,Winnings,"=LET(tp, G2#, MAP(tp, LAMBDA(t, (SUM(IF((A2:A100=""Above"")*(t>B2:B100), C2:C100, 0)) + SUM(IF((A2:A100=""Below"")*(t<B2:B100), C2:C100, 0))) * IFERROR(INDEX(C2:C100,1),1))))","Spills winnings per segment (e.g., 600, 1400, 800); pricePerQty defaults to 1"
+I1,Net Profit,=H2# - D2,"Spills net profit (e.g., -100, 700, 100)"
+J1,Liability,"=IF(I2# < 0, -I2#, 0)","Spills liability per segment (e.g., 100, 0, 0)"
+K1,Max Liability,=MAX(J2#),Single value of maximum liability across segments
