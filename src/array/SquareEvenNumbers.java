@@ -1,7 +1,6 @@
 package array;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class SquareEvenNumbers {
     public static void main(String[] args) {
